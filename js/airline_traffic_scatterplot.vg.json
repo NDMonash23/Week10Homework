@@ -1,0 +1,132 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Flights vs passengers in 2022 for airlines flying to and from Australia",
+    "width": "container",
+    "height": 400,
+    "data": {"url": "data/airline_traffic.csv"},
+    "params": [
+        {
+        "name": "airline_continent_selection",
+        "bind": {
+            "input": "select",
+            "options": [
+                null,
+                "Asia",
+                "Europe",
+                "North America",
+                "Oceania",
+                "South America"
+            ],
+            "labels":[
+                "Show All",
+                "Asia",
+                "Europe",
+                "North America",
+                "Oceania",
+                "South America"
+            ],
+            "name": "Airline Origin Continent Selection: "
+        }
+      }
+    ],
+    "transform": [
+        {"filter": "airline_continent_selection == null || datum.Origin == airline_continent_selection"}
+    ],
+    "layer" : [
+      {
+        "mark": "point",
+        "encoding": {
+          "x": {
+            "field": "Total Flights", 
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "Total Passengers", 
+            "type": "quantitative"
+          },
+          "size": {"value": 100},
+          "tooltip": [
+            {"field": "Airline", "type": "nominal"},
+            {"field": "Total Flights", "type": "quantitative", "format": ","},
+            {"field": "Total Passengers", "type": "quantitative", "format": ","}
+          ]
+        }
+      },
+      {
+        "data": {"values": [{}]},
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "baseline": "bottom",
+          "text": ["The majority of airlines operated", "less than 2,000 flights, carrying", "less than 300,000 passengers"],
+          "dx": -30,
+          "dy": 85,
+          "fontSize": 12
+        },
+        "encoding": {
+          "opacity": {
+            "condition": {
+              "test": "airline_continent_selection == null",
+              "value": 1
+            },
+            "value": 0
+          }
+        }
+      },
+      {
+        "data": {"values": [{}]},
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "baseline": "bottom",
+          "text": ["Singapore Airlines and Qantas Airways were", "well ahead of other airlines, flying more than", "twice as many flights as their closest competitor"],
+          "dx": 90,
+          "dy": -115,
+          "fontSize": 12
+        },
+        "encoding": {
+          "opacity": {
+            "condition": {
+              "test": "airline_continent_selection == null",
+              "value": 1
+            },
+            "value": 0
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "align": "right",
+          "baseline": "middle",
+          "dx": -12,
+          "fontSize": 10,
+          "fontStyle": "italic"
+        },
+        "encoding": {
+          "x": {
+            "field": "Total Flights", 
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "Total Passengers", 
+            "type": "quantitative"
+          },
+          "text": {"field": "Airline", "type": "nominal"},
+          "color": {"value": "black"},
+          "opacity": {
+            "condition": {
+              "test": "airline_continent_selection == null & (datum['Airline'] == 'Singapore Airlines' || datum['Airline'] == 'Qantas Airways')",
+              "value": 1
+            },
+          "value": 0
+          },
+          "tooltip": [
+            {"field": "Airline", "type": "nominal"},
+            {"field": "Total Flights", "type": "quantitative", "format": ","},
+            {"field": "Total Passengers", "type": "quantitative", "format": ","}
+          ]
+        }
+      }
+    ]
+}
